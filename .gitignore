@@ -1,0 +1,14 @@
+# Arquivos objeto
+*.o
+
+# Arquivos de depuração
+*.dSYM
+
+# Executáveis
+a.out
+*.exe
+*.out
+
+# Pasta bin/ ou outra pasta onde os executáveis podem ser gerados
+/bin/
+/out/
