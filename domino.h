@@ -33,7 +33,9 @@ Board* createBoard(int N);
 void generatePieces(Node** stock);
 void printStock(Node* stock);
 void shufflePieces(Node** stock);
-void printPlayersInfos(const Player* players, int numberOfPlayers);
+void printPlayerInfo(Player *player);
 void distributePieces(Node** stock, Player* players, int numberOfPlayers, int piecesPerPlayer);
+int whoStarts(Player *players, int numberOfPlayers);
+void printBoard(const Board *board);
 
 #endif

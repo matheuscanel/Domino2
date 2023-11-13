@@ -78,25 +78,20 @@ void shufflePieces(Node **stock){
     }
 }
 
-void printPlayersInfos(const Player *players, int numberOfPlayers){
+void printPlayerInfo(Player *player) {
+    printf("Jogador: %s\n", player->name);
+    printf("Mao: ");
 
-    printf("Informacoes dos jogadores:\n");
-    for (int i = 0; i < numberOfPlayers; i++) {
+    Node *handNode = player->hand;
 
-        printf("\nJogador %d: %s\n", i + 1, players[i].name);
-        printf("Mao: ");
-        Node *handNode = players[i].hand;
-
-        if (handNode == NULL) {
-            printf("Vazia\n");
-        } else {
-            // Percorrer a mão do jogador e imprimir as peças
-            while (handNode != NULL) {
-                printf("[%d|%d] ", handNode->values.left, handNode->values.right);
-                handNode = handNode->next;
-            }
-            printf("\n");
+    if (handNode == NULL) {
+        printf("Vazia\n");
+    } else {
+        while (handNode != NULL) {
+            printf("[%d|%d] ", handNode->values.left, handNode->values.right);
+            handNode = handNode->next;
         }
+        printf("\n");
     }
 }
     
@@ -132,3 +127,41 @@ void distributePieces(Node **stock, Player *players, int numberOfPlayers, int pi
     }
 }
     
+int whoStarts(Player *players, int numberOfPlayers) {
+    int startingPlayer = -1;  // Índice do jogador que começa
+    int highestValue = -1;    // Valor da maior soma de extremidades encontrada até agora
+
+    for (int i = 0; i < numberOfPlayers; i++) {
+        Node *handNode = players[i].hand;
+        
+        // Iterar pelas peças na mão do jogador
+        while (handNode != NULL) {
+            int pieceValue = handNode->values.left + handNode->values.right;
+
+            if (pieceValue > highestValue || (pieceValue == highestValue && 
+                (handNode->values.left == handNode->values.right ||
+                 handNode->values.left > handNode->values.right))) {
+                highestValue = pieceValue;
+                startingPlayer = i;  // Este jogador começa
+            }
+
+            handNode = handNode->next;
+        }
+    }
+
+    return startingPlayer;  // Retorna o índice do jogador que começa
+}
+
+// Função para imprimir o estado atual do tabuleiro
+void printBoard(const Board *board) {
+    Node *currentPiece = board->game;
+
+    printf("\nEstado atual do tabuleiro:\n");
+
+    while (currentPiece != NULL) {
+        printf("[%d|%d] ", currentPiece->values.left, currentPiece->values.right);
+        currentPiece = currentPiece->next;
+    }
+
+    printf("\n");
+}
