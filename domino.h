@@ -37,5 +37,7 @@ void printPlayerInfo(Player *player);
 void distributePieces(Node** stock, Player* players, int numberOfPlayers, int piecesPerPlayer);
 int whoStarts(Player *players, int numberOfPlayers);
 void printBoard(const Board *board);
+int canPlay(Domino piece, Node *board);
+void playPiece(Player *player, Board *board, int pieceIndex);
 
 #endif

@@ -15,9 +15,7 @@ int main() {
     scanf("%d", &choice);
     
     if (choice == 1) {
-        int numberOfPlayers;
-        printf("Quantos jogadores irao jogar?");
-        scanf("%d", &numberOfPlayers); // perguntar o numero de jogadores
+        int numberOfPlayers = 4;
 
         Board *board = createBoard(numberOfPlayers); // criar o board
 
@@ -41,7 +39,7 @@ int main() {
 
 
         // distribuir peças
-        int piecesPerPlayer = 7; // isso se o máximo forem 4 (sujeito a ajuste)
+        int piecesPerPlayer = 7; 
         distributePieces(&stock, players, numberOfPlayers, piecesPerPlayer);
 
         for (int j = 0; j < numberOfPlayers; j++) {
@@ -56,25 +54,36 @@ int main() {
 
         // exibir board e mão do jogador da vez
         int gameOver = 0;
-        printf("\nJogo iniciado");
-        while (gameOver<numberOfPlayers) { // loop da partida
-            
-            printBoard(board);
+        printf("\nJogo iniciado\n");
+while (gameOver < numberOfPlayers) { // loop da partida
+    
+    printBoard(board);
 
-            printf("Jogador da vez: %s\n", players[board->playersTurn].name);
-            printPlayerInfo(&players[board->playersTurn]);
+    printf("Jogador da vez: %s\n", players[board->playersTurn].name);
+    printPlayerInfo(&players[board->playersTurn]);
 
-            // Implemente a lógica do jogo (jogada válida, puxar/passar, etc.)
-            // Você deve implementar a lógica do jogo aqui para permitir que os jogadores façam jogadas válidas,
-            // puxar peças, passar o turno, determinar o fim do jogo, etc.
+    // Aqui você precisa implementar a lógica para o jogador selecionar uma peça para jogar
+    // Isso pode ser feito com uma função separada ou diretamente aqui.
+    // Por exemplo, você poderia pedir ao jogador para escolher o índice da peça que ele deseja jogar:
+    int pieceIndex;
+    printf("Escolha a peca para jogar (0 a %d): ", piecesPerPlayer - 1);
+    scanf("%d", &pieceIndex);
+    
+    
+    // Agora chame a função playPiece com o jogador atual, o tabuleiro e o índice da peça selecionada
+    playPiece(&players[board->playersTurn], board, pieceIndex);
 
-            // Defina a condição de fim de jogo (por exemplo, quando um jogador esvaziar sua mão)
-            // gameOver = ?;
+    // Verifique se o jogador atual esvaziou sua mão, o que significaria que ele ganhou e o jogo terminou
+    if (players[board->playersTurn].hand == NULL) {
+        printf("%s ganhou o jogo!\n", players[board->playersTurn].name);
+        gameOver = 1; // Isso terminará o loop do jogo
+        break; // Sai do loop da partida
+    }
 
-            // Atualizar o turno para o próximo jogador
-            board->playersTurn = (board->playersTurn + 1) % numberOfPlayers;
-            gameOver++;
-        }
+    // Atualizar o turno para o próximo jogador
+    board->playersTurn = (board->playersTurn + 1) % numberOfPlayers;
+}
+
     } else if (choice == 2) {
         printf("Ranking dos jogadores\n");
         // Implemente a funcionalidade do ranking aqui, se necessário.
