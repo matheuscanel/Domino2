@@ -201,7 +201,7 @@ void playPiece(Player *player, Board *board, int pieceIndex) {
     }
 
     if (selectedPieceNode == NULL) {
-        printf("Peca invalida, tente novamente.\n");
+        printf("Peca invalida\n");
         return;
     }
 
@@ -280,4 +280,18 @@ void playPiece(Player *player, Board *board, int pieceIndex) {
     }
 
     // Liberação do nó da peça jogada é removida daqui, pois agora ela faz parte do tabuleiro
+}
+
+void bubbleSortPlayers(Player players[], int count) {
+    int i, j;
+    for (i = 0; i < count - 1; i++) {
+        for (j = 0; j < count - i - 1; j++) {
+            if (players[j].score < players[j + 1].score) {
+                // Troca os jogadores
+                Player temp = players[j];
+                players[j] = players[j + 1];
+                players[j + 1] = temp;
+            }
+        }
+    }
 }

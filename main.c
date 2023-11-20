@@ -4,7 +4,21 @@
 #include "domino.h"
 
 int main() {
+    
+    printf("Seja bem vindo ao jogo de domino em C\n");
+
+    int numberOfPlayers = 4;
+    // criar jogadores
+    Player players[numberOfPlayers];
+    for (int i = 0; i < numberOfPlayers; i++) {
+        players[i].name = malloc(MAX_NAME_LENGTH * sizeof(char));
+        printf("Digite o nome do jogador %d: ", i + 1);
+        scanf("%s", players[i].name);
+        players[i].hand = NULL;
+        players[i].score = 0;
+    }
    
+   while(1){
     //Menu
     int choice;
 
@@ -15,6 +29,7 @@ int main() {
     scanf("%d", &choice);
     
     if (choice == 1) {
+
         int numberOfPlayers = 4;
 
         Board *board = createBoard(numberOfPlayers); // criar o board
@@ -29,19 +44,18 @@ int main() {
         printStock(stock);
         
         // criar jogadores
-        Player players[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++) {
-            players[i].name = malloc(MAX_NAME_LENGTH * sizeof(char));
-            printf("Digite o nome do jogador %d: ", i + 1);
-            scanf("%s", players[i].name);
-            players[i].hand = NULL;
-        }
+        // Player players[numberOfPlayers];
+        // for (int i = 0; i < numberOfPlayers; i++) {
+        //     players[i].name = malloc(MAX_NAME_LENGTH * sizeof(char));
+        //     printf("Digite o nome do jogador %d: ", i + 1);
+        //     scanf("%s", players[i].name);
+        //     players[i].hand = NULL;
+        // }
 
 
         // distribuir peças
         int piecesPerPlayer = 7; 
         distributePieces(&stock, players, numberOfPlayers, piecesPerPlayer);
-
         for (int j = 0; j < numberOfPlayers; j++) {
             printPlayerInfo(&players[j]);
         }
@@ -55,44 +69,77 @@ int main() {
         // exibir board e mão do jogador da vez
         int gameOver = 0;
         printf("\nJogo iniciado\n");
-while (gameOver < numberOfPlayers) { // loop da partida
+        while (gameOver < numberOfPlayers) { // loop da partida
     
-    printBoard(board);
+        printBoard(board);
 
-    printf("Jogador da vez: %s\n", players[board->playersTurn].name);
-    printPlayerInfo(&players[board->playersTurn]);
+        printf("Jogador da vez: %s\n", players[board->playersTurn].name);
+        printPlayerInfo(&players[board->playersTurn]);
 
-    // Aqui você precisa implementar a lógica para o jogador selecionar uma peça para jogar
-    // Isso pode ser feito com uma função separada ou diretamente aqui.
-    // Por exemplo, você poderia pedir ao jogador para escolher o índice da peça que ele deseja jogar:
-    int pieceIndex;
-    printf("Escolha a peca para jogar (0 a %d): ", piecesPerPlayer - 1);
-    scanf("%d", &pieceIndex);
+        //escolha de peça
+        int pieceIndex;
+        printf("Escolha a peca para jogar (0 a %d): ", piecesPerPlayer - 1);
+        scanf("%d", &pieceIndex);
     
     
-    // Agora chame a função playPiece com o jogador atual, o tabuleiro e o índice da peça selecionada
-    playPiece(&players[board->playersTurn], board, pieceIndex);
+        //Jogar peça
+        playPiece(&players[board->playersTurn], board, pieceIndex);
 
-    // Verifique se o jogador atual esvaziou sua mão, o que significaria que ele ganhou e o jogo terminou
-    if (players[board->playersTurn].hand == NULL) {
-        printf("%s ganhou o jogo!\n", players[board->playersTurn].name);
-        gameOver = 1; // Isso terminará o loop do jogo
-        break; // Sai do loop da partida
-    }
+        // Verifique se o jogador atual esvaziou sua mão, o que significaria que ele ganhou e o jogo terminou
+        if (players[board->playersTurn].hand == NULL) {
+            printf("\n%s ganhou o jogo!\n", players[board->playersTurn].name);
+            gameOver = 1; // Isso terminará o loop do jogo
+            players[board->playersTurn].score++;
+            //limpeza da mão
+            for (int i = 0; i < numberOfPlayers; i++) {
+                Node* curr = players[i].hand; //curr abrevia current
+                while (curr != NULL) {
+                Node* next = curr->next; // Presume-se que seu Node tenha um ponteiro 'next'
+                    free(curr); // Libera a peça atual
+                    curr = next; // Avança para a próxima peça
+                }
+                
+                players[i].hand = NULL; // Define a mão do jogador para NULL após limpar
+            }
+            break; // Sai do loop da partida
+        }
 
     // Atualizar o turno para o próximo jogador
-    board->playersTurn = (board->playersTurn + 1) % numberOfPlayers;
-}
+        board->playersTurn = (board->playersTurn + 1) % numberOfPlayers;
+    }
 
     } else if (choice == 2) {
-        printf("Ranking dos jogadores\n");
-        // Implemente a funcionalidade do ranking aqui, se necessário.
+        bubbleSortPlayers(players, numberOfPlayers); // Ordena os jogadores pelo score
+        printf("Ranking dos jogadores:\n");
+        for (int i = 0; i < numberOfPlayers; i++) {
+            printf("%dº Lugar: %s com %d pontos\n", i + 1, players[i].name, players[i].score);
+        }
+        
+
     } else if (choice == 3) {
         printf("Fechar programa\n");
-        return 0;    
+        for (int i = 0; i < numberOfPlayers; i++) {
+
+            // Libera o nome do jogador
+            free(players[i].name); 
+
+            // Libera a mão do jogador
+            Node* curr = players[i].hand;
+
+            while (curr != NULL) {
+                Node* next = curr->next;
+                free(curr);
+                curr = next;
+            }
+    }
+           
+        break;
     } else {
         printf("Opcao invalida, tente novamente\n");
+        
     }
+   
+   }
 
     return 0;
 }

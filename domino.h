@@ -21,6 +21,7 @@ typedef struct Node {
 typedef struct Player {
     Node* hand;
     char* name;
+    int score;
 } Player;
 
 typedef struct Board {
@@ -39,5 +40,6 @@ int whoStarts(Player *players, int numberOfPlayers);
 void printBoard(const Board *board);
 int canPlay(Domino piece, Node *board);
 void playPiece(Player *player, Board *board, int pieceIndex);
+void bubbleSortPlayers(Player players[], int count);
 
 #endif
